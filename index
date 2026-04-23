@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>命理财富等级测算</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --g0:#fff8e0;--g1:#f5d876;--g2:#d4a520;--g3:#b8860b;--g4:#8a6208;--g5:#3a2800;
+  --bg:#0c0900;--bg2:#161000;--bg3:#1e1600;
+  --sur:#221800;--sur2:#2e2004;--sur3:#3a2a08;
+  --tw:#f0e5c8;--t1:#d8c490;--t2:#a07830;--t3:#6a4e18;
+  --r:#c02818;--rb:rgba(192,40,24,.15);
+  --gr:#1a6030;--grb:rgba(26,96,48,.15);
+  --bl:#1a4090;--blb:rgba(26,64,144,.15);
+  --bd:rgba(212,165,32,.2);--bd2:rgba(212,165,32,.45);--bd3:rgba(212,165,32,.08);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tw);font-family:'Noto Serif SC','PingFang SC',serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+.screen{display:none;min-height:100vh;flex-direction:column;animation:fadeIn .35s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ LANDING ══ */
+#s-land{
+  align-items:center;justify-content:center;text-align:center;
+  padding:52px 24px;position:relative;overflow:hidden;
+}
+.land-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 20%,rgba(212,165,32,.07),transparent),
+    radial-gradient(ellipse 50% 40% at 80% 80%,rgba(180,100,10,.05),transparent);
+}
+.stars-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:0}50%{opacity:var(--o)}}
+
+/* 引导词 */
+.land-intro{
+  position:relative;z-index:1;
+  max-width:300px;margin:0 auto 28px;
+}
+.land-intro-q{
+  font-family:'Ma Shan Zheng',serif;
+  font-size:clamp(17px,4.5vw,22px);
+  line-height:1.9;letter-spacing:2px;
+  color:var(--tw);
+  margin-bottom:14px;
+}
+.land-intro-q .hi{
+  color:var(--g1);
+  position:relative;
+}
+.land-intro-q .hi::after{
+  content:'';position:absolute;left:0;bottom:-2px;right:0;height:1px;
+  background:linear-gradient(to right,var(--g2),transparent);
+}
+.land-intro-sub{
+  font-size:12px;color:var(--t2);letter-spacing:2px;line-height:1.9;
+  padding:10px 14px;
+  background:rgba(212,165,32,.06);
+  border:1px solid var(--bd);border-radius:3px;
+}
+.land-intro-sub b{color:var(--g1)}
+
+.land-badge{
+  display:inline-block;font-size:9px;letter-spacing:4px;color:var(--t2);
+  border:1px solid var(--bd);padding:3px 16px;border-radius:20px;
+  margin-bottom:16px;
+}
+.land-title{
+  font-family:'Ma Shan Zheng',serif;
+  font-size:clamp(38px,11vw,66px);letter-spacing:6px;line-height:1.1;margin-bottom:8px;
+  background:linear-gradient(160deg,var(--g0),var(--g1),var(--g2),var(--g3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(212,165,32,.3));
+  animation:titleGlow 4s ease-in-out infinite;
+}
+@keyframes titleGlow{
+  0%,100%{filter:drop-shadow(0 0 15px rgba(212,165,32,.2))}
+  50%{filter:drop-shadow(0 0 40px rgba(212,165,32,.5))}
+}
+.land-sub{font-size:11px;color:var(--t3);letter-spacing:3px;margin-bottom:28px}
+
+.grade-preview{
+  display:flex;gap:7px;justify-content:center;
+  margin-bottom:28px;flex-wrap:wrap;
+}
+.gp{
+  padding:5px 13px;border-radius:2px;
+  font-family:'Ma Shan Zheng',serif;font-size:15px;
+  border:1px solid var(--bd);background:var(--sur);
+  color:var(--t1);transition:transform .18s;
+}
+.gp:hover{transform:translateY(-2px)}
+.gp.gp-s{background:rgba(212,165,32,.15);color:var(--g1);border-color:var(--bd2)}
+
+.land-desc{
+  font-size:12px;color:var(--t2);line-height:2.1;
+  max-width:296px;margin:0 auto 36px;
+  padding:14px 18px;background:var(--sur);
+  border:1px solid var(--bd);border-radius:4px;
+}
+.land-desc b{color:var(--g1)}
+
+.btn-start{
+  background:linear-gradient(135deg,var(--g4),var(--g3),var(--g2));
+  color:var(--g0);font-family:'Ma Shan Zheng',serif;font-size:18px;letter-spacing:4px;
+  padding:15px 52px;border-radius:3px;border:none;cursor:pointer;
+  box-shadow:0 4px 24px rgba(212,165,32,.25);
+  transition:transform .18s,box-shadow .18s;
+}
+.btn-start:active{transform:scale(.97)}
+
+/* ══ FORM ══ */
+#s-form{background:var(--bg2)}
+.f-hd{
+  background:var(--sur);border-bottom:1px solid var(--bd);
+  padding:15px 16px;text-align:center;position:relative;flex-shrink:0;
+}
+.f-back{position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t2);font-size:22px;cursor:pointer;padding:4px 8px}
+.f-hd-title{font-family:'Ma Shan Zheng',serif;font-size:17px;color:var(--g2);letter-spacing:3px}
+.f-hd-sub{font-size:10px;color:var(--t3);letter-spacing:1px;margin-top:2px}
+
+.f-body{flex:1;padding:18px 14px;overflow-y:auto}
+
+.prog-wrap{margin-bottom:14px}
+.prog-bar{height:3px;background:var(--bd3);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.prog-fill{height:100%;background:linear-gradient(to right,var(--g4),var(--g2));border-radius:2px;transition:width .45s ease}
+.prog-txt{font-size:9px;color:var(--t3);letter-spacing:1px}
+
+.q-block{
+  background:var(--sur);border:1px solid var(--bd);border-radius:4px;
+  padding:14px;margin-bottom:10px;
+  transition:border-color .2s;
+}
+.q-block.done{border-color:rgba(212,165,32,.4)}
+.q-num{font-size:9px;letter-spacing:2px;color:var(--t3);margin-bottom:5px}
+.q-title{font-size:13px;color:var(--tw);line-height:1.7;margin-bottom:5px;font-weight:600}
+.q-note{font-size:10px;color:var(--t3);margin-bottom:10px;line-height:1.6}
+
+.opts{display:flex;flex-direction:column;gap:5px}
+.opts-2{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.opt{
+  padding:9px 11px;background:var(--bg);border:1px solid var(--bd);
+  border-radius:3px;color:var(--t1);font-size:11.5px;
+  cursor:pointer;transition:all .18s;text-align:left;line-height:1.55;
+}
+.opt:active{background:var(--sur2)}
+.opt.sel{
+  background:rgba(212,165,32,.12);border-color:var(--g2);color:var(--g1);
+}
+
+.btn-go{
+  width:100%;padding:14px;margin-top:6px;
+  background:linear-gradient(135deg,var(--g4),var(--g3),var(--g2));
+  color:var(--g0);font-family:'Ma Shan Zheng',serif;font-size:17px;letter-spacing:4px;
+  border:none;border-radius:3px;cursor:pointer;
+  box-shadow:0 4px 14px rgba(212,165,32,.2);
+  transition:opacity .2s;
+}
+.btn-go:disabled{opacity:.35;cursor:default}
+
+/* ══ RESULT ══ */
+#s-result{background:var(--bg);overflow-y:auto}
+
+.r-cover{
+  background:linear-gradient(180deg,var(--sur2),var(--bg));
+  border-bottom:1px solid var(--bd2);
+  padding:40px 20px 28px;text-align:center;
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.r-cover::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--g2),transparent)}
+
+.r-ring{
+  width:118px;height:118px;border-radius:50%;
+  margin:0 auto 18px;
+  border:2px solid var(--bd2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;
+  animation:ringPulse 3s ease-in-out infinite;
+}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 20px rgba(212,165,32,.15)}50%{box-shadow:0 0 40px rgba(212,165,32,.35)}}
+.r-ring::before{content:'';position:absolute;inset:-9px;border-radius:50%;border:1px solid var(--bd);animation:rotateSlow 22s linear infinite}
+@keyframes rotateSlow{to{transform:rotate(360deg)}}
+
+.r-letter{
+  font-family:'Ma Shan Zheng',serif;font-size:52px;line-height:1;
+  background:linear-gradient(180deg,var(--g0),var(--g2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.r-gname{font-size:10px;color:var(--t2);letter-spacing:2px;margin-top:2px}
+.r-title{font-family:'Ma Shan Zheng',serif;font-size:21px;color:var(--g1);letter-spacing:4px;margin-bottom:5px}
+.r-score{font-size:11px;color:var(--t3);letter-spacing:2px;margin-bottom:18px}
+.r-badge{
+  display:inline-block;font-size:12px;color:var(--g2);
+  background:rgba(212,165,32,.1);
+  border:1px solid var(--bd2);padding:5px 20px;border-radius:20px;letter-spacing:1px;
+}
+
+/* 四维 */
+.dims{padding:18px 14px;background:var(--sur)}
+.sec-title{
+  font-family:'Ma Shan Zheng',serif;font-size:14px;color:var(--g2);
+  letter-spacing:2px;margin-bottom:14px;
+  padding-left:8px;border-left:3px solid var(--g3);
+}
+.dim-item{margin-bottom:13px}
+.dim-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.dim-lbl{font-size:11px;color:var(--t2);letter-spacing:1px}
+.dim-val{font-size:11px;color:var(--g2);font-weight:600}
+.dim-track{height:5px;background:var(--bd3);border-radius:3px;overflow:hidden}
+.dim-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.dim-note{font-size:10px;color:var(--t3);margin-top:3px;line-height:1.5}
+
+/* 分析块 */
+.blocks{padding:0 14px 8px;background:var(--bg)}
+.blk{
+  background:var(--sur);border:1px solid var(--bd);border-radius:4px;
+  padding:13px;margin-bottom:9px;position:relative;overflow:hidden;
+}
+.blk::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.blk-gold::before{background:linear-gradient(to right,var(--g4),var(--g2))}
+.blk-red::before{background:linear-gradient(to right,#601008,var(--r))}
+.blk-green::before{background:linear-gradient(to right,#083020,var(--gr))}
+.blk-blue::before{background:linear-gradient(to right,#081028,var(--bl))}
+.blk-title{font-family:'Ma Shan Zheng',serif;font-size:13px;color:var(--g2);letter-spacing:2px;margin-bottom:7px}
+.blk-red .blk-title{color:#f09080}
+.blk-green .blk-title{color:#70d090}
+.blk-blue .blk-title{color:#90b8f0}
+.blk-txt{font-size:12px;color:var(--t1);line-height:1.95}
+.blk-txt strong{color:var(--g1);font-weight:600}
+.blk-txt .bad{color:#f09080;font-weight:600}
+.blk-txt .good{color:#70d090;font-weight:600}
+
+/* 等级表 */
+.gtable{padding:0 14px 8px;background:var(--bg)}
+.g-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;background:var(--sur);
+  border:1px solid var(--bd);border-radius:3px;margin-bottom:5px;
+  transition:border-color .2s;
+}
+.g-row.cur{border-color:var(--g2);background:rgba(212,165,32,.08)}
+.g-letter{font-family:'Ma Shan Zheng',serif;font-size:19px;width:26px;flex-shrink:0;text-align:center}
+.g-info{flex:1}
+.g-name{font-size:11px;color:var(--tw);margin-bottom:1px}
+.g-range{font-size:10px;color:var(--t3)}
+.g-tag{
+  font-size:9px;color:var(--g2);white-space:nowrap;
+  background:rgba(212,165,32,.12);
+  border:1px solid var(--bd2);padding:2px 7px;border-radius:10px;
+}
+
+/* 钩子 */
+.hook{padding:0 14px 12px;background:var(--bg)}
+.hook-box{
+  background:linear-gradient(135deg,var(--sur2),var(--sur));
+  border:1px solid var(--bd2);border-radius:4px;
+  padding:18px 16px;text-align:center;position:relative;overflow:hidden;
+}
+.hook-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--g2),transparent)}
+.hook-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--bd2),transparent)}
+.hook-txt{
+  font-family:'Ma Shan Zheng',serif;font-size:14px;
+  color:var(--t1);line-height:2.3;letter-spacing:1px;
+}
+.hook-txt strong{color:var(--g1)}
+.hook-v{font-size:13px;color:var(--g2);letter-spacing:2px;margin-top:6px;display:block}
+
+/* 操作 */
+.acts{padding:0 14px 32px;display:flex;gap:10px;background:var(--bg)}
+.btn-share{
+  flex:1;padding:12px;background:var(--sur);
+  border:1px solid var(--bd2);color:var(--g1);
+  font-family:'Ma Shan Zheng',serif;font-size:14px;letter-spacing:2px;
+  border-radius:3px;cursor:pointer;
+}
+.btn-redo{
+  flex:1;padding:12px;
+  background:linear-gradient(135deg,var(--g4),var(--g2));
+  color:var(--g0);font-family:'Ma Shan Zheng',serif;font-size:14px;letter-spacing:2px;
+  border:none;border-radius:3px;cursor:pointer;
+}
+
+.div-line{height:1px;background:linear-gradient(to right,transparent,var(--bd),transparent);margin:4px 14px 12px}
+
+.foot{
+  text-align:center;padding:14px;font-size:10px;
+  color:var(--t3);letter-spacing:2px;line-height:1.9;
+  border-top:1px solid var(--bd3);background:var(--bg);
+}
+.foot-brand{font-family:'Ma Shan Zheng',serif;font-size:13px;color:var(--g3);letter-spacing:4px;margin-bottom:3px}
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div class="screen active" id="s-land">
+  <div class="land-bg"></div>
+  <div class="stars-wrap" id="stars"></div>
+
+  <!-- 引导词 -->
+  <div class="land-intro">
+    <div class="land-intro-q">
+      此生财富等级<br>
+      到底能达到何种程度？<br>
+      <span class="hi">巨富</span>？&nbsp;<span class="hi">中产</span>？&nbsp;<span class="hi">小康</span>？<br>
+      还是<span style="color:rgba(192,40,24,.85)">落败一生</span>？
+    </div>
+    <div class="land-intro-sub">
+      完成这份测评<br>
+      将你的<b>命理财富格局</b>一探究竟
+    </div>
+  </div>
+
+  <div class="land-badge">Bazi Wealth Analysis · 八字财富测算</div>
+  <div class="land-title">命理<br>財富等級</div>
+  <div class="land-sub">八字四维财力测算系统</div>
+
+  <div class="grade-preview">
+    <div class="gp gp-s">S · 巨富</div>
+    <div class="gp">A · 富贵</div>
+    <div class="gp">B · 小康</div>
+    <div class="gp">C · 温饱</div>
+    <div class="gp">D · 破财</div>
+    <div class="gp">E · 贫困</div>
+  </div>
+
+  <div class="land-desc">
+    依据八字四维评估体系<br>
+    <b>财星强弱 · 担财能力 · 守财格局 · 爆发潜力</b><br>
+    10道题精准定位你的命理财富等级
+  </div>
+
+  <button class="btn-start" onclick="show('s-form')">开始测算</button>
+</div>
+
+<!-- ══ FORM ══ -->
+<div class="screen" id="s-form">
+  <div class="f-hd">
+    <button class="f-back" onclick="show('s-land')">←</button>
+    <div class="f-hd-title">填写命盘信息</div>
+    <div class="f-hd-sub">根据你的八字特征选择最符合的选项</div>
+  </div>
+  <div class="f-body">
+    <div class="prog-wrap">
+      <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <div class="prog-txt" id="prog-txt">请依次作答，共 10 题</div>
+    </div>
+    <div id="qs"></div>
+    <button class="btn-go" id="btn-go" onclick="calc()" disabled>查看我的财富等级</button>
+  </div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="screen" id="s-result"></div>
+
+<script>
+// ══ 题目数据 ══════════════════════════════════════════════════
+const QS = [
+  {
+    id:1, dim:1,
+    title:'财星是否透出天干？',
+    note:'男命看财星（正偏财），女命看官杀。透干指出现在年干、月干、时干。',
+    opts:[
+      {t:'年干高透，财星开门见山',s:5},
+      {t:'月干透出，得时得令力量强',s:4},
+      {t:'时干透出，晚年方见财',s:3},
+      {t:'仅藏于地支，财在库中来得慢',s:2},
+      {t:'命局无财星',s:0},
+    ]
+  },
+  {
+    id:2, dim:1,
+    title:'财星在出生月份的旺衰？',
+    note:'月令当令为旺相；休囚为平；死绝为弱。可对照五行旺相休囚死绝表判断。',
+    opts:[
+      {t:'财星当令，旺相有力',s:5},
+      {t:'财星休囚，但地支另有根，尚可',s:3},
+      {t:'财星死绝，力量薄弱',s:1},
+      {t:'不确定',s:2},
+    ]
+  },
+  {
+    id:3, dim:1,
+    title:'财星五行在地支出现几次？',
+    note:'查年支、月支、日支、时支，统计财星五行（含藏干）共出现几次。',
+    opts:[
+      {t:'三处以上，根基极深',s:5},
+      {t:'两处有根',s:4},
+      {t:'一处有根',s:2},
+      {t:'地支无根，财星飘浮',s:0},
+    ]
+  },
+  {
+    id:4, dim:2,
+    title:'日元身强还是身弱？',
+    note:'身强：日元得月令或得帮扶，比劫印星多。身弱：日元失令，被克泄耗多。',
+    opts:[
+      {t:'日元极强，身旺能扛大财',s:5},
+      {t:'日元偏强，担财能力较好',s:4},
+      {t:'日元中等，担财能力适中',s:3},
+      {t:'日元偏弱，财重有压力',s:2},
+      {t:'日元极弱，财多反为祸',s:1},
+    ]
+  },
+  {
+    id:5, dim:2,
+    title:'食伤星（日元所生五行）状态？',
+    note:'食伤代表赚钱的能力与方式。食伤旺则善于开源；食伤弱或无则赚钱能力弱。',
+    opts:[
+      {t:'食伤透干有根，旺而有力，赚钱能力强',s:5},
+      {t:'食伤有根但不透干，赚钱能力中等',s:3},
+      {t:'食伤弱或无，赚钱主动性不足',s:1},
+      {t:'食伤逢冲克，赚钱过程阻碍多',s:0},
+    ]
+  },
+  {
+    id:6, dim:3,
+    title:'命局是否有财库？',
+    note:'辰戌丑未为四库。当其中藏有财星五行时即为财库，代表财可积累、守得住。',
+    opts:[
+      {t:'财库在日支或时支，守财最稳',s:5},
+      {t:'财库在年支或月支，有积累能力',s:4},
+      {t:'有财库但被冲开，守财难度高',s:2},
+      {t:'命局无财库',s:1},
+    ]
+  },
+  {
+    id:7, dim:3,
+    title:'命局有无严重财务隐患？',
+    note:'如比劫过旺、财星逢忌冲、劫财无制等，都会导致财来财去难以积累。',
+    opts:[
+      {t:'无重大忌星冲克，格局干净',s:5},
+      {t:'有轻微不利因素，影响不大',s:3},
+      {t:'比劫旺且无制，财容易被分夺',s:2},
+      {t:'财星逢忌冲克，漏财明显',s:1},
+      {t:'劫财重叠无官制，破财严重',s:0},
+    ]
+  },
+  {
+    id:8, dim:4,
+    title:'官杀星（克日元之五行）的状态？',
+    note:'官杀代表社会地位与外部资源。官杀有力且有印化，则贵气强、外部助力多。',
+    opts:[
+      {t:'官杀透干有根且有印化，格局贵气',s:5},
+      {t:'官杀有根不透干，地位稳中偏上',s:4},
+      {t:'官杀太弱或无，社会地位一般',s:2},
+      {t:'官杀过旺无印化，压力大难发挥',s:1},
+      {t:'官杀逢冲，职场阻碍多',s:0},
+    ]
+  },
+  {
+    id:9, dim:4,
+    title:'印星（生日元之五行）的状态？',
+    note:'印星代表贵人、背景资源、逢凶化吉的能力。印星有力则贵人多，资源好。',
+    opts:[
+      {t:'印星透干有根，贵人多背景好',s:5},
+      {t:'印星有根不透干，贵人偶有助力',s:3},
+      {t:'印星弱或无，靠自己打拼为主',s:2},
+      {t:'印星被合冲，贵人难留资源易失',s:1},
+    ]
+  },
+  {
+    id:10, dim:4,
+    title:'当前或未来10年大运走势？',
+    note:'大运五行走到财官旺地则财运好；走忌星煞地则需谨慎；走食伤地则开源有力。',
+    opts:[
+      {t:'大运走财官旺地，财禄齐来',s:5},
+      {t:'大运走食伤生财之地，稳中有升',s:4},
+      {t:'大运走印比之地，平稳守成',s:3},
+      {t:'大运走忌星煞地，需谨慎',s:1},
+      {t:'大运走财星死绝或逢冲，财运受阻',s:0},
+    ]
+  },
+];
+
+// 维度名称
+const DIM_NAMES = {1:'财星力量',2:'赚钱能力',3:'守财格局',4:'爆发潜力'};
+const DIM_NOTES = {
+  1:'财星透干 · 月令旺衰 · 地支有根',
+  2:'日元担财能力 · 食伤开源',
+  3:'财库积累 · 有无漏财隐患',
+  4:'官杀贵气 · 印星资源 · 大运走势'
+};
+const DIM_COLORS = {
+  1:'linear-gradient(to right,var(--g4),var(--glt2))',
+  2:'linear-gradient(to right,#083818,var(--gr))',
+  3:'linear-gradient(to right,#081428,var(--bl))',
+  4:'linear-gradient(to right,#800808,var(--r))'
+};
+
+// ══ STATE ══
+const ans = {}, sc = {};
+
+// ══ SCREENS ══
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ══ BUILD QUESTIONS ══
+function buildQs(){
+  const wrap = document.getElementById('qs');
+  QS.forEach(q => {
+    const block = document.createElement('div');
+    block.className = 'q-block';
+    block.id = 'q'+q.id;
+
+    const isTwoCol = q.opts.length === 4;
+    const optsHtml = q.opts.map((o,i) =>
+      `<div class="opt" onclick="pick(${q.id},${i},${o.s})">${o.t}</div>`
+    ).join('');
+
+    block.innerHTML = `
+      <div class="q-num">第 ${q.id} 题 · ${DIM_NAMES[q.dim]}</div>
+      <div class="q-title">${q.title}</div>
+      <div class="q-note">${q.note}</div>
+      <div class="${isTwoCol?'opts-2':'opts'}">${optsHtml}</div>
+    `;
+    wrap.appendChild(block);
+  });
+}
+
+function pick(qId, optIdx, score){
+  ans[qId] = optIdx;
+  sc[qId]  = score;
+
+  const block = document.getElementById('q'+qId);
+  block.querySelectorAll('.opt').forEach((o,i) => {
+    o.classList.toggle('sel', i === optIdx);
+  });
+  block.classList.add('done');
+
+  const done = Object.keys(ans).length;
+  const pct  = Math.round(done/10*100);
+  document.getElementById('prog').style.width = pct+'%';
+  document.getElementById('prog-txt').textContent = `已完成 ${done} / 10 题`;
+  document.getElementById('btn-go').disabled = done < 10;
+
+  if(done < 10){
+    const next = document.getElementById('q'+(qId+1));
+    if(next) setTimeout(()=>next.scrollIntoView({behavior:'smooth',block:'start'}),180);
+  }
+}
+
+// ══ CALC ══
+function calc(){
+  const total = Object.values(sc).reduce((a,b)=>a+b,0);
+
+  // dim scores
+  const dims = {};
+  QS.forEach(q => {
+    if(!dims[q.dim]) dims[q.dim]=0;
+    dims[q.dim] += (sc[q.id]||0);
+  });
+  // max per dim: dim1=15(3q×5), dim2=10(2q×5), dim3=10(2q×5), dim4=15(3q×5)
+  const dimMax = {1:15,2:10,3:10,4:15};
+  const dimPct = {};
+  Object.keys(dims).forEach(d => dimPct[d] = Math.round(dims[d]/dimMax[d]*100));
+
+  // grade
+  let grade, gname, grange, gcolor;
+  if(total>=44){grade='S';gname='巨富命';grange='亿级以上资产格局';gcolor='#f5d876'}
+  else if(total>=36){grade='A';gname='富贵命';grange='千万级资产格局';gcolor='#d4a060'}
+  else if(total>=26){grade='B';gname='小康命';grange='百万级积累格局';gcolor='#b87840'}
+  else if(total>=18){grade='C';gname='温饱命';grange='收入稳定难积累';gcolor='#a06030'}
+  else if(total>=10){grade='D';gname='破财命';grange='财运大起大落';gcolor='#805020'}
+  else{grade='E';gname='贫困命';grange='财运严重受阻';gcolor='#604018'}
+
+  // verdicts
+  const verdicts = {
+    S:'你的八字具备顶级财富格局——财星高透、月令当旺、地支三根、身强能担。这是千里挑一的命格，财富积累只是时间问题。唯需谨记：命格越高，犯忌越贵，重大财务决策必须专业把关。',
+    A:'你的八字财力格局相当强健，具备千万量级的积累能力。财星有力、官杀贵气、印星资源好——优势明显。关键在于识别命局中的漏洞并提前堵住，A级格局完全可以守住。',
+    B:'你的八字财运中等偏上，正财收入稳定，通过持续积累可达百万量级。最重要的功课是守财——控制情绪化消费，将流动资金尽快转化为固定资产，细水长流终成财富。',
+    C:'你的八字正财收入尚可，但积累速度偏慢，守财难度较大。建议深耕一门专业技能，以稳定收入为主，远离偏财投机，温饱有余，贵在持守。',
+    D:'你的八字财运大起大落，赚钱速度往往赶不上漏财速度。核心任务是规避风险、重建守财习惯，绝对禁止高风险投资和借贷担保，先止损再谈增长。',
+    E:'你的八字财运受到较大制约，需要通过后天努力突破命格局限。专注专业、积累贵人资源、改善居住风水，都是改善财运的有效路径。'
+  };
+
+  // strong/weak
+  const strong=[], weak=[];
+  if(dimPct[1]>=80) strong.push('财星力量极强，财缘深厚，机会主动找上门');
+  else if(dimPct[1]<40) weak.push('财星力量薄弱，财缘不足，需主动创造机会');
+  if(dimPct[2]>=80) strong.push('赚钱能力突出，食伤开源有力，行动就有收获');
+  else if(dimPct[2]<40) weak.push('赚钱过程费力，需加倍努力才能有所积累');
+  if(dimPct[3]>=80) strong.push('守财格局稳健，财库有根，积累看得见摸得着');
+  else if(dimPct[3]<40) weak.push('守财能力偏弱，存在漏财隐患，需严格理财');
+  if(dimPct[4]>=80) strong.push('爆发潜力充足，贵人资源好，大运走势有利');
+  else if(dimPct[4]<40) weak.push('爆发格局不足，以稳健正财为主，远离投机');
+
+  const gradeRows=[
+    {g:'S',n:'巨富命',r:'亿级以上',c:'#f5d876'},
+    {g:'A',n:'富贵命',r:'千万级',c:'#d4a060'},
+    {g:'B',n:'小康命',r:'百万级',c:'#b87840'},
+    {g:'C',n:'温饱命',r:'稳定收入',c:'#a06030'},
+    {g:'D',n:'破财命',r:'大起大落',c:'#805020'},
+    {g:'E',n:'贫困命',r:'严重受阻',c:'#604018'},
+  ];
+
+  const html = `
+    <div class="r-cover">
+      <div class="r-ring" style="border-color:${gcolor}60">
+        <div class="r-letter" style="background:linear-gradient(180deg,var(--g0),${gcolor});-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${grade}</div>
+        <div class="r-gname" style="color:${gcolor}">${gname}</div>
+      </div>
+      <div class="r-title">你的命理财富等级</div>
+      <div class="r-score">综合评分 ${total} / 50 分</div>
+      <div class="r-badge" style="color:${gcolor}">${grange}</div>
+    </div>
+
+    <div class="dims">
+      <div class="sec-title">四维能力详解</div>
+      ${[1,2,3,4].map(d=>`
+        <div class="dim-item">
+          <div class="dim-row">
+            <span class="dim-lbl">${DIM_NAMES[d]}</span>
+            <span class="dim-val">${dimPct[d]}%</span>
+          </div>
+          <div class="dim-track">
+            <div class="dim-fill" style="width:0%;background:${DIM_COLORS[d]}" data-w="${dimPct[d]}"></div>
+          </div>
+          <div class="dim-note">${DIM_NOTES[d]}</div>
+        </div>`).join('')}
+    </div>
+
+    <div class="div-line"></div>
+
+    <div class="blocks">
+      <div class="blk blk-gold">
+        <div class="blk-title">📊 综合命理判断</div>
+        <div class="blk-txt">${verdicts[grade]}</div>
+      </div>
+
+      ${strong.length?`<div class="blk blk-green">
+        <div class="blk-title">✦ 命格优势</div>
+        <div class="blk-txt">${strong.map(s=>`<div style="padding:3px 0;border-bottom:1px solid rgba(184,120,8,.07)"><span class="good">✦</span> ${s}</div>`).join('')}</div>
+      </div>`:''}
+
+      ${weak.length?`<div class="blk blk-red">
+        <div class="blk-title">△ 需要注意</div>
+        <div class="blk-txt">${weak.map(w=>`<div style="padding:3px 0;border-bottom:1px solid rgba(184,120,8,.07)"><span class="bad">△</span> ${w}</div>`).join('')}</div>
+      </div>`:''}
+
+      <div class="blk blk-blue">
+        <div class="blk-title">💡 核心建议</div>
+        <div class="blk-txt">
+          ${{S:'<strong>格局已具备</strong>，堵住漏洞是第一优先。重大财务决策找专业人士把关，不要让一个忌星毁掉整体格局。',A:'<strong>优势明显</strong>，找到自己最顺的赚钱方式并深耕，同时把赚到的钱尽快转化为低风险固定资产。',B:'<strong>稳中求进</strong>，深耕专业技能，控制情绪化消费，将流动资金转为固定资产，细水长流终成财富。',C:'<strong>专注正财</strong>，远离偏财投机，靠专业技能稳步积累，贵人格局的培养比偏财更重要。',D:'<strong>止损优先</strong>，绝对禁止合伙投资和借贷担保，先守住当下的财，再谈增长。',E:'<strong>后天突破</strong>，专注专业，积累贵人，改善风水环境，命格局限可以通过后天努力改变。'}[grade]}
+          <br><br>想了解你命盘精准的财运时间线和突破方向，加v详聊：<strong>seeu0731</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="div-line"></div>
+
+    <div class="gtable">
+      <div class="sec-title">财富等级全览</div>
+      ${gradeRows.map(r=>`
+        <div class="g-row ${r.g===grade?'cur':''}">
+          <div class="g-letter" style="color:${r.c}">${r.g}</div>
+          <div class="g-info">
+            <div class="g-name">${r.n}</div>
+            <div class="g-range">${r.r}</div>
+          </div>
+          ${r.g===grade?`<div class="g-tag">← 你在这里</div>`:''}
+        </div>`).join('')}
+    </div>
+
+    <div class="div-line"></div>
+
+    <div class="hook">
+      <div class="hook-box">
+        <div class="hook-txt">
+          这份是基础版测算<br>
+          你命盘的<strong>精确财运引动年份</strong><br>
+          以及<strong>最容易在财务上犯的那个致命错误</strong><br>
+          完整版才有
+          <span class="hook-v">加v看完整分析：<strong>seeu0731</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="acts">
+      <button class="btn-share" onclick="alert('长按截图保存，分享给朋友测测财富等级')">分享给朋友</button>
+      <button class="btn-redo" onclick="reset()">重新测算</button>
+    </div>
+
+    <div class="foot">
+      <div class="foot-brand">天機閣</div>
+      本测算基于八字命理框架，仅供研究娱乐参考<br>不构成任何财务决策依据
+    </div>
+  `;
+
+  document.getElementById('s-result').innerHTML = html;
+  show('s-result');
+  setTimeout(()=>{
+    document.querySelectorAll('.dim-fill').forEach(el=>{
+      el.style.width = el.dataset.w+'%';
+    });
+  },300);
+}
+
+function reset(){
+  Object.keys(ans).forEach(k=>delete ans[k]);
+  Object.keys(sc).forEach(k=>delete sc[k]);
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.q-block').forEach(b=>b.classList.remove('done'));
+  document.getElementById('prog').style.width='0%';
+  document.getElementById('prog-txt').textContent='请依次作答，共 10 题';
+  document.getElementById('btn-go').disabled=true;
+  show('s-form');
+}
+
+// ══ INIT ══
+(function(){
+  // stars
+  const el=document.getElementById('stars');
+  for(let i=0;i<45;i++){
+    const d=document.createElement('div');
+    d.className='star';
+    const s=Math.random()*2+.5;
+    d.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${Math.random()*4+2}s;--o:${Math.random()*.5+.1};animation-delay:${Math.random()*5}s`;
+    el.appendChild(d);
+  }
+  buildQs();
+})();
+</script>
+</body>
+</html>
